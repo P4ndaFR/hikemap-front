@@ -1,7 +1,7 @@
 #mapid { 
     position: absolute;
     top: 55px;
-    bottom: 0;
-    height: 100%;
+    bottom: 5px;
+    height: 95%;
     width: 100%;
 }
