@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@[VERSION]/dist/L.Control.Locate.min.css"/>
+        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@1.4.0/dist/L.Control.Locate.min.css"/>-->
         
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -64,17 +64,13 @@
                     </p>
                     <p>Renseignez la distance et le point de départ de la randonnée</p>
                     <div class="row">
+                            <div class="input-field col s12">
+                                    <input placeholder="5" id="address" type="text" class="validate">
+                                    <label for="address">Adresse</label>
+                                </div>
                         <div class="input-field col s12">
                             <input placeholder="5" id="distance" type="text" class="validate">
-                            <label for="distance">distance</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <input placeholder="5" id="latitude" type="text" class="validate">
-                            <label for="latitude">latitude</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <input placeholder="5" id="longitude" type="text" class="validate">
-                            <label for="longitude">longitude</label>
+                            <label for="distance">Distance</label>
                         </div>
                     </div>
                     <a href="#!" class="modal-close waves-effect waves-green btn-flat" onclick="getLoop()">Générer</a>
