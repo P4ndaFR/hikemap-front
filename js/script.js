@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
    }
 
-   // call locate every 3 seconds... forever
-   setInterval(locate, 500);
+   // call locate every 100ms seconds... forever
+   setInterval(locate, 100);
 
 
