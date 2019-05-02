@@ -24,7 +24,9 @@ function getLoop() {
     var distance = document.getElementById("distance").value;
     var loopradio = document.getElementById('loop');
     var patrimonialradio = document.getElementById('patrimonial');
-
+    var gpsradio = document.getElementById('gps');
+    var addressradio = document.getElementById('addressradio');
+    var lat,lng;
     
     const positioncall = new XMLHttpRequest();
     const positionurl = 'https://nominatim.openstreetmap.org/search?format=json&q='+address;
@@ -32,9 +34,17 @@ function getLoop() {
     positioncall.send();
     positioncall.onreadystatechange = (e) => {
         var res = JSON.parse(positioncall.responseText);
+        if(gpsradio.checked) {
+            lat =current_position._latlng.lat;
+            lng = current_position._latlng.lng;
+        }
+        if(addressradio.checked){
+            lat =res[0].lat;
+            lng=res[0].lon;
+        }
         if(loopradio.checked) {
             const loopcall = new XMLHttpRequest();
-            const loopurl = 'http://127.0.0.1:4567/loop/' + res[0].lat + '/' + res[0].lon + '/' + distance;
+            const loopurl = 'http://127.0.0.1:4567/loop/' +lat + '/' + lng + '/' + distance;
             loopcall.open("GET", loopurl);
             loopcall.send();
             loopcall.onreadystatechange = (e) => {
@@ -48,7 +58,7 @@ function getLoop() {
         }
         if(patrimonialradio.checked){
             const loopcall = new XMLHttpRequest();
-            const loopurl = 'http://127.0.0.1:4567/patrimonial/' + res[0].lat + '/' + res[0].lon + '/' + distance;
+            const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance;
             loopcall.open("GET", loopurl);
             loopcall.send();
             loopcall.onreadystatechange = (e) => {
@@ -131,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
    // wrap map.locate in a function    
    function locate() {
        if(mustLocate){
-            mymap.locate({setView: true, maxZoom: 16});
+            mymap.locate({setView: false, maxZoom: 16});
             div = document.getElementsByClassName('fixed-action-button');
             button = document.getElementsByClassName('btn-floating');
             div[0].removeChild(button[0]);
@@ -147,6 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    // call locate every 3 seconds... forever
-   setInterval(locate, 500);
+   setInterval(locate, 3000);
 
 
