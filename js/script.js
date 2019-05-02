@@ -52,7 +52,7 @@ function getLoop() {
                 var points = loopres.points;
                 L.marker(points[0]).addTo(mymap);
                 L.marker(points[points.length - 1]).addTo(mymap);
-                var polyline = L.polyline(points, { color: 'blue' }).addTo(mymap);
+                var polyline = L.polyline(points, { color: 'red' }).addTo(mymap);
                 mymap.fitBounds(polyline.getBounds());
             }
         }
@@ -66,18 +66,11 @@ function getLoop() {
                 var points = loopres.points;
                 L.marker(points[0]).addTo(mymap);
                 L.marker(points[points.length - 1]).addTo(mymap);
-                var polyline = L.polyline(points, { color: 'blue' }).addTo(mymap);
+                var polyline = L.polyline(points, { color: 'red' }).addTo(mymap);
                 mymap.fitBounds(polyline.getBounds());
             }
         }
     }
-}
-
-function test() {
-    div = document.getElementsByClassName('fixed-action-button');
-    button = document.getElementsByClassName('btn-floating');
-    div[0].removeChild(button[0]);
-    div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_off</i></a>');
 }
 
 function toggleLocate(){
@@ -88,8 +81,8 @@ function toggleLocate(){
     }
 }
 
-var latlon = [48.4085 ,-4.5284];
-var mymap = L.map('mapid', { zoomControl: false }).setView(latlon, 13);
+var latlon = [48.1688,-2.9059];
+var mymap = L.map('mapid', { zoomControl: false }).setView(latlon, 9);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>',
     maxZoom: 18,
@@ -123,16 +116,21 @@ document.addEventListener('DOMContentLoaded', function () {
          mymap.removeLayer(current_accuracy);
      }
 
-     var radius = e.accuracy / 10;
+     var radius = e.accuracy / 2;
 
-     current_position = L.circle(e.latlng, 1,weight=50).addTo(mymap);
+     current_position = L.circle(e.latlng, 1, { weight: mymap.getZoom()} ).addTo(mymap);
      current_accuracy = L.circle(e.latlng, radius).addTo(mymap);
 
     
    }
 
    function onLocationError(e) {
-        alert(e.message);
+        div = document.getElementsByClassName('fixed-action-button');
+        button = document.getElementsByClassName('btn-floating');
+        div[0].removeChild(button[0]);
+        div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_off</i></a>');
+        mymap.removeLayer(current_position);
+        mymap.removeLayer(current_accuracy);
    }
 
    mymap.on('locationfound', onLocationFound);
@@ -150,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             div = document.getElementsByClassName('fixed-action-button');
             button = document.getElementsByClassName('btn-floating');
             div[0].removeChild(button[0]);
-            div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_off</i></a>');
+            div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_not_fixed</i></a>');
             mymap.removeLayer(current_position);
             mymap.removeLayer(current_accuracy);
         }
