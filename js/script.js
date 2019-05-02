@@ -75,9 +75,17 @@ function getLoop() {
 
 function toggleLocate(){
     if(!mustLocate){
-        mustLocate = true
+        mymap.locate({ setView: true, maxZoom: 13});
+        div = document.getElementsByClassName('fixed-action-button');
+        button = document.getElementsByClassName('btn-floating');
+        div[0].removeChild(button[0]);
+        div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_fixed</i></a>');
     }else{
         mustLocate = false
+        div = document.getElementsByClassName('fixed-action-button');
+        button = document.getElementsByClassName('btn-floating');
+        div[0].removeChild(button[0]);
+        div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_not_fixed</i></a>');
     }
 }
 
@@ -109,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
    var current_position, current_accuracy;
 
    function onLocationFound(e) {
+    mustLocate = true
      // if position defined, then remove the existing position marker and accuracy circle from the map
      if (current_position) {
          mymap.removeLayer(current_position);
@@ -124,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
    }
 
    function onLocationError(e) {
+        mustLocate = false
         div = document.getElementsByClassName('fixed-action-button');
         button = document.getElementsByClassName('btn-floating');
         div[0].removeChild(button[0]);
@@ -138,22 +148,14 @@ document.addEventListener('DOMContentLoaded', function () {
    // wrap map.locate in a function    
    function locate() {
        if(mustLocate){
-            mymap.locate({setView: false, maxZoom: 16});
-            div = document.getElementsByClassName('fixed-action-button');
-            button = document.getElementsByClassName('btn-floating');
-            div[0].removeChild(button[0]);
-            div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_fixed</i></a>');
+            mymap.locate();
        }else{
-            div = document.getElementsByClassName('fixed-action-button');
-            button = document.getElementsByClassName('btn-floating');
-            div[0].removeChild(button[0]);
-            div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_not_fixed</i></a>');
             mymap.removeLayer(current_position);
             mymap.removeLayer(current_accuracy);
         }
    }
 
    // call locate every 3 seconds... forever
-   setInterval(locate, 3000);
+   setInterval(locate, 500);
 
 
