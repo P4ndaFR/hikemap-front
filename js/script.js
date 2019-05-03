@@ -26,7 +26,7 @@ function getLoop() {
     var patrimonialradio = document.getElementById('patrimonial');
     var gpsradio = document.getElementById('gps');
     var addressradio = document.getElementById('addressradio');
-    var lat,lng;
+    var lat,lng,stops;
     
     const positioncall = new XMLHttpRequest();
     const positionurl = 'https://nominatim.openstreetmap.org/search?format=json&q='+address;
@@ -57,8 +57,9 @@ function getLoop() {
             }
         }
         if(patrimonialradio.checked){
+            stops = document.getElementById("stops").value;
             const loopcall = new XMLHttpRequest();
-            const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance;
+            const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
             loopcall.open("GET", loopurl);
             loopcall.send();
             loopcall.onreadystatechange = (e) => {
@@ -71,6 +72,21 @@ function getLoop() {
             }
         }
     }
+}
+
+function addStopSlider(){
+    div = document.getElementById('distancediv');
+    div.insertAdjacentHTML('afterend', '<div id=stopsdiv> <p id="brief" >Renseignez le nombre de monument que vous voulez visiter</p><p id=stopValue>3<p><p class="range-field"><input type="range" id="stops" min="1" max="5" onchange="showStopsValue()"/></p></div>');
+}
+
+function deleteStopSlider(){
+    form = document.getElementById('form');
+    div = document.getElementById('stopsdiv');
+    form.removeChild(div);
+}
+
+function showStopsValue(){
+    document.getElementById('stopValue').innerHTML=document.getElementById("stops").value;
 }
 
 function toggleLocate(){

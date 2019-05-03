@@ -48,7 +48,7 @@
         <div id="modal1" class="modal">
             <div class="modal-content">
                 <h4>Itinéraire</h4>
-                <form action="#">
+                <form action="#" id="form">
                     <p>choisissez le mode de positionnement du point de départ</p>
                     <p>
                         <label>
@@ -69,18 +69,18 @@
                     <p>choisissez parmis les options</p>
                     <p>
                         <label>
-                            <input class="with-gap" name="group2" type="radio" id="loop" checked/>
+                            <input class="with-gap" name="group2" type="radio" id="loop" checked onclick="deleteStopSlider()"/>
                             <span>Simple boucle</span>
                         </label>
                     </p>
                     <p>
                         <label>
-                            <input class="with-gap" name="group2" type="radio"  id="patrimonial" unchecked/>
+                            <input class="with-gap" name="group2" type="radio"  id="patrimonial" unchecked onclick="addStopSlider()"/>
                             <span>Boucle avec découverte patrimoniale</span>
                         </label>
                     </p>
                     <p>Renseignez la distance de la randonnée</p>
-                    <div class="row">
+                    <div class="row" id="distancediv">
                         <div class="input-field col s12">
                             <input placeholder="5" id="distance" type="text" class="validate">
                             <label for="distance">Distance</label>
