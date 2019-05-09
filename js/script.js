@@ -2,12 +2,18 @@ function clearMap() {
     for (i in mymap._layers) {
         if (mymap._layers[i].options.format == undefined) {
             try {
-                mymap.removeLayer(mymap._layers[i]);
+                if(mymap._layers[i]._url == undefined) {
+                    mymap.removeLayer(mymap._layers[i]);
+                }
             } catch (e) {
                 console.log("problem with " + e + mymap._layers[i]);
             }
         }
-    }
+    }/*
+    if(trace != null){
+        console.log(trace)
+        mymap.removeLayer(trace);
+    }*/
 }
 
 function getLoop() {
@@ -48,27 +54,47 @@ function getLoop() {
             loopcall.open("GET", loopurl);
             loopcall.send();
             loopcall.onreadystatechange = (e) => {
-                var loopres = JSON.parse(loopcall.responseText);
-                var points = loopres.points;
-                L.marker(points[0]).addTo(mymap);
-                L.marker(points[points.length - 1]).addTo(mymap);
-                var polyline = L.polyline(points, { color: 'red' }).addTo(mymap);
-                mymap.fitBounds(polyline.getBounds());
+                if(loopcall.readyState == 4 && loopcall.status==200){
+                    var loopres = JSON.parse(loopcall.responseText);
+                    var points = loopres.points;
+                    //L.marker(points[0]).addTo(mymap);
+                    //L.marker(points[points.length - 1]).addTo(mymap);
+                    trace = L.polyline(points, { color: 'red' }).addTo(mymap);
+                    mymap.fitBounds(polyline.getBounds());
+                }
             }
         }
-        if(patrimonialradio.checked){
+        if(patrimonialradio.checked) {
             stops = document.getElementById("stops").value;
             const loopcall = new XMLHttpRequest();
             const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
             loopcall.open("GET", loopurl);
             loopcall.send();
             loopcall.onreadystatechange = (e) => {
-                var loopres = JSON.parse(loopcall.responseText);
-                var points = loopres.points;
-                L.marker(points[0]).addTo(mymap);
-                L.marker(points[points.length - 1]).addTo(mymap);
-                var polyline = L.polyline(points, { color: 'red' }).addTo(mymap);
-                mymap.fitBounds(polyline.getBounds());
+                if(loopcall.readyState == 4 && loopcall.status==200){
+                    if(loopcall.responseText) {
+                        var loopres = JSON.parse(loopcall.responseText);
+                        var points = loopres.points;
+                        //L.marker(points[0]).addTo(mymap);
+                        //L.marker(points[points.length - 1]).addTo(mymap);
+                        trace = L.polyline(points, { color: 'red' }).addTo(mymap);
+                        if(loopres.success) {
+                            for(var j=0; j < loopres.historic_points.length; j++){
+                                var hp = L.marker([loopres.historic_points[j].lat,loopres.historic_points[j].lon]).bindPopup("placeholder").addTo(mymap);
+                                var tagobject = loopres.historic_points[j].tags;
+                                var tagsarray = Object.keys(tagobject).map(function(key){return tagobject[key];});
+                                var popuptext="";
+                                for(var k = 0; k < tagsarray.length; k++){
+                                    popuptext=popuptext+"<p>"+tagsarray[k]+"</p>"
+                                }
+                                hp._popup.setContent(popuptext);
+                            }
+                        }else{
+                            M.toast({html: 'Pas assez de sites patrimoniaux dans la zone de recherche'});
+                        }
+                        mymap.fitBounds(trace.getBounds());
+                    }
+                }
             }
         }
     }
@@ -103,36 +129,9 @@ function toggleLocate(){
         div[0].removeChild(button[0]);
         div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_not_fixed</i></a>');
     }
+    console.log("trace is :"+trace);
 }
-
-var latlon = [48.1688,-2.9059];
-var mymap = L.map('mapid', { zoomControl: false }).setView(latlon, 9);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>',
-    maxZoom: 18,
-}).addTo(mymap);
-L.control.zoom({ position: 'topright' }).addTo(mymap);
-
-var div,button,mustLocate;
-
-mustLocate = false;
-
-document.addEventListener('DOMContentLoaded', function () {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
-
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
-    
-    //var elems = document.querySelectorAll('.fixed-action-btn');
-    //var instances = M.FloatingActionButton.init(elems);
-
-});
-
-   // placeholders for the L.marker and L.circle representing user's current position and accuracy    
-   var current_position, current_accuracy;
-
-   function onLocationFound(e) {
+function onLocationFound(e) {
     mustLocate = true
      // if position defined, then remove the existing position marker and accuracy circle from the map
      if (current_position) {
@@ -146,32 +145,55 @@ document.addEventListener('DOMContentLoaded', function () {
      current_accuracy = L.circle(e.latlng, radius).addTo(mymap);
 
     
-   }
+}
 
-   function onLocationError(e) {
-        mustLocate = false
-        div = document.getElementsByClassName('fixed-action-button');
-        button = document.getElementsByClassName('btn-floating');
-        div[0].removeChild(button[0]);
-        div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_off</i></a>');
+function onLocationError(e) {
+    mustLocate = false
+    div = document.getElementsByClassName('fixed-action-button');
+    button = document.getElementsByClassName('btn-floating');
+    div[0].removeChild(button[0]);
+    div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_off</i></a>');
+    if (current_position != undefined) {
         mymap.removeLayer(current_position);
         mymap.removeLayer(current_accuracy);
-   }
+    }
+}
 
-   mymap.on('locationfound', onLocationFound);
-   mymap.on('locationerror', onLocationError);
+function locate() {
+    if(mustLocate){
+         mymap.locate();
+    }else{
+         if (current_position != undefined) {
+             mymap.removeLayer(current_position);
+             mymap.removeLayer(current_accuracy);
+         }
+     }
+}
 
-   // wrap map.locate in a function    
-   function locate() {
-       if(mustLocate){
-            mymap.locate();
-       }else{
-            mymap.removeLayer(current_position);
-            mymap.removeLayer(current_accuracy);
-        }
-   }
+var latlon = [48.1688,-2.9059];
+var mymap = L.map('mapid', { zoomControl: false }).setView(latlon, 9);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    maxZoom: 18,
+}).addTo(mymap);
+L.control.zoom({ position: 'topright' }).addTo(mymap);
 
-   // call locate every 100ms seconds... forever
-   setInterval(locate, 100);
+var div,button,mustLocate,start,stop,trace;
+trace=null;
+
+mustLocate = false;
+
+document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems);
+
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+});
+
+var current_position, current_accuracy;
+mymap.on('locationfound', onLocationFound);
+mymap.on('locationerror', onLocationError);
+setInterval(locate, 600);
 
 
