@@ -47,7 +47,7 @@ function getLoop() {
                 }
                 if(loopradio.checked) {
                     const loopcall = new XMLHttpRequest();
-                    const loopurl = 'http://127.0.0.1:4567/loop/' +lat + '/' + lng + '/' + distance;
+                    const loopurl = 'https://hikemap-api.blondeau.me/loop/' +lat + '/' + lng + '/' + distance;
                     loopcall.open("GET", loopurl);
                     loopcall.send();
                     loopcall.onreadystatechange = (e) => {
@@ -57,14 +57,14 @@ function getLoop() {
                             L.marker(points[0]).addTo(mymap);
                             //L.marker(points[points.length - 1]).addTo(mymap);
                             trace = L.polyline(points, { color: 'red' }).addTo(mymap);
-                            mymap.fitBounds(polyline.getBounds());
+                            mymap.fitBounds(trace.getBounds());
                         }
                     }
                 }
                 if(patrimonialradio.checked) {
                     stops = document.getElementById("stops").value;
                     const loopcall = new XMLHttpRequest();
-                    const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
+                    const loopurl = 'https://hikemap-api.blondeau.me/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
                     loopcall.open("GET", loopurl);
                     loopcall.send();
                     loopcall.onreadystatechange = (e) => {
