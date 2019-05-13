@@ -20,11 +20,6 @@ function getLoop() {
 
     clearMap();
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>',
-        maxZoom: 18,
-    }).addTo(mymap);
-
     var address = document.getElementById("address").value;
     address = address.replace(/ +(?= )/g,'+');
     var distance = document.getElementById("distance").value;
@@ -39,60 +34,64 @@ function getLoop() {
     positioncall.open("GET", positionurl);
     positioncall.send();
     positioncall.onreadystatechange = (e) => {
-        var res = JSON.parse(positioncall.responseText);
-        if(gpsradio.checked) {
-            lat =current_position._latlng.lat;
-            lng = current_position._latlng.lng;
-        }
-        if(addressradio.checked){
-            lat =res[0].lat;
-            lng=res[0].lon;
-        }
-        if(loopradio.checked) {
-            const loopcall = new XMLHttpRequest();
-            const loopurl = 'http://127.0.0.1:4567/loop/' +lat + '/' + lng + '/' + distance;
-            loopcall.open("GET", loopurl);
-            loopcall.send();
-            loopcall.onreadystatechange = (e) => {
-                if(loopcall.readyState == 4 && loopcall.status==200){
-                    var loopres = JSON.parse(loopcall.responseText);
-                    var points = loopres.points;
-                    //L.marker(points[0]).addTo(mymap);
-                    //L.marker(points[points.length - 1]).addTo(mymap);
-                    trace = L.polyline(points, { color: 'red' }).addTo(mymap);
-                    mymap.fitBounds(polyline.getBounds());
+        if(positioncall.readyState == 4 && positioncall.status==200){
+            if(positioncall.responseText) {
+                var res = JSON.parse(positioncall.responseText);
+                if(gpsradio.checked) {
+                    lat =current_position._latlng.lat;
+                    lng = current_position._latlng.lng;
                 }
-            }
-        }
-        if(patrimonialradio.checked) {
-            stops = document.getElementById("stops").value;
-            const loopcall = new XMLHttpRequest();
-            const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
-            loopcall.open("GET", loopurl);
-            loopcall.send();
-            loopcall.onreadystatechange = (e) => {
-                if(loopcall.readyState == 4 && loopcall.status==200){
-                    if(loopcall.responseText) {
-                        var loopres = JSON.parse(loopcall.responseText);
-                        var points = loopres.points;
-                        //L.marker(points[0]).addTo(mymap);
-                        //L.marker(points[points.length - 1]).addTo(mymap);
-                        trace = L.polyline(points, { color: 'red' }).addTo(mymap);
-                        if(loopres.success) {
-                            for(var j=0; j < loopres.historic_points.length; j++){
-                                var hp = L.marker([loopres.historic_points[j].lat,loopres.historic_points[j].lon]).bindPopup("placeholder").addTo(mymap);
-                                var tagobject = loopres.historic_points[j].tags;
-                                var tagsarray = Object.keys(tagobject).map(function(key){return tagobject[key];});
-                                var popuptext="";
-                                for(var k = 0; k < tagsarray.length; k++){
-                                    popuptext=popuptext+"<p>"+tagsarray[k]+"</p>"
-                                }
-                                hp._popup.setContent(popuptext);
-                            }
-                        }else{
-                            M.toast({html: 'Pas assez de sites patrimoniaux dans la zone de recherche'});
+                if(addressradio.checked){
+                    lat =res[0].lat;
+                    lng=res[0].lon;
+                }
+                if(loopradio.checked) {
+                    const loopcall = new XMLHttpRequest();
+                    const loopurl = 'http://127.0.0.1:4567/loop/' +lat + '/' + lng + '/' + distance;
+                    loopcall.open("GET", loopurl);
+                    loopcall.send();
+                    loopcall.onreadystatechange = (e) => {
+                        if(loopcall.readyState == 4 && loopcall.status==200){
+                            var loopres = JSON.parse(loopcall.responseText);
+                            var points = loopres.points;
+                            L.marker(points[0]).addTo(mymap);
+                            //L.marker(points[points.length - 1]).addTo(mymap);
+                            trace = L.polyline(points, { color: 'red' }).addTo(mymap);
+                            mymap.fitBounds(polyline.getBounds());
                         }
-                        mymap.fitBounds(trace.getBounds());
+                    }
+                }
+                if(patrimonialradio.checked) {
+                    stops = document.getElementById("stops").value;
+                    const loopcall = new XMLHttpRequest();
+                    const loopurl = 'http://127.0.0.1:4567/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
+                    loopcall.open("GET", loopurl);
+                    loopcall.send();
+                    loopcall.onreadystatechange = (e) => {
+                        if(loopcall.readyState == 4 && loopcall.status==200){
+                            if(loopcall.responseText) {
+                                var loopres = JSON.parse(loopcall.responseText);
+                                var points = loopres.points;
+                                L.marker(points[0], {color: 'green' }).addTo(mymap);
+                                //L.marker(points[points.length - 1]).addTo(mymap);
+                                trace = L.polyline(points, { color: 'red' }).addTo(mymap);
+                                if(loopres.success) {
+                                    for(var j=0; j < loopres.historic_points.length; j++){
+                                        var hp = L.marker([loopres.historic_points[j].lat,loopres.historic_points[j].lon]).bindPopup("placeholder").addTo(mymap);
+                                        var tagobject = loopres.historic_points[j].tags;
+                                        var tagsarray = Object.keys(tagobject).map(function(key){return tagobject[key];});
+                                        var popuptext="";
+                                        for(var k = 0; k < tagsarray.length; k++){
+                                            popuptext=popuptext+"<p>"+tagsarray[k]+"</p>"
+                                        }
+                                        hp._popup.setContent(popuptext);
+                                    }
+                                }else{
+                                    M.toast({html: 'Pas assez de sites patrimoniaux dans la zone de recherche'});
+                                }
+                                mymap.fitBounds(trace.getBounds());
+                            }
+                        }
                     }
                 }
             }
@@ -128,8 +127,11 @@ function toggleLocate(){
         button = document.getElementsByClassName('btn-floating');
         div[0].removeChild(button[0]);
         div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_not_fixed</i></a>');
+        if (current_position) {
+            mymap.removeLayer(current_position);
+            mymap.removeLayer(current_accuracy);
+        }
     }
-    console.log("trace is :"+trace);
 }
 function onLocationFound(e) {
     mustLocate = true
