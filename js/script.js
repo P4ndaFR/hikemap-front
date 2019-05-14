@@ -79,10 +79,11 @@ function getLoop() {
                                     for(var j=0; j < loopres.historic_points.length; j++){
                                         var hp = L.marker([loopres.historic_points[j].lat,loopres.historic_points[j].lon]).bindPopup("placeholder").addTo(mymap);
                                         var tagobject = loopres.historic_points[j].tags;
-                                        var tagsarray = Object.keys(tagobject).map(function(key){return tagobject[key];});
+                                        var tagsarray = Object.keys(tagobject).map(function(key){return [ key, tagobject[key] ];});
+                                        tagsarray.sort();
                                         var popuptext="";
                                         for(var k = 0; k < tagsarray.length; k++){
-                                            popuptext=popuptext+"<p>"+tagsarray[k]+"</p>"
+                                            popuptext=popuptext+"<p>"+tagsarray[k][0]+" : "+tagsarray[k][1]+"</p>"
                                         }
                                         hp._popup.setContent(popuptext);
                                     }
