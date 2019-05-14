@@ -122,6 +122,7 @@ function toggleLocate(){
         button = document.getElementsByClassName('btn-floating');
         div[0].removeChild(button[0]);
         div[0].insertAdjacentHTML('afterbegin', '<a class="btn-floating btn-large waves-effect waves-light red" onclick="toggleLocate()"><i class="material-icons">gps_fixed</i></a>');
+        mustLocate = true;        
     }else{
         mustLocate = false
         div = document.getElementsByClassName('fixed-action-button');
@@ -135,7 +136,6 @@ function toggleLocate(){
     }
 }
 function onLocationFound(e) {
-    mustLocate = true
      // if position defined, then remove the existing position marker and accuracy circle from the map
      if (current_position) {
          mymap.removeLayer(current_position);
