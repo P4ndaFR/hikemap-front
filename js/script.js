@@ -19,7 +19,7 @@ function clearMap() {
 function getLoop() {
 
     clearMap();
-
+    var routerurl="https://hikemap-api.blondeau.me";
     var address = document.getElementById("address").value;
     address = address.replace(/ +(?= )/g,'+');
     var distance = document.getElementById("distance").value;
@@ -27,6 +27,7 @@ function getLoop() {
     var patrimonialradio = document.getElementById('patrimonial');
     var gpsradio = document.getElementById('gps');
     var addressradio = document.getElementById('addressradio');
+    var vehicle = document.getElementById('vehicle').value;
     var lat,lng,stops;
     
     const positioncall = new XMLHttpRequest();
@@ -47,7 +48,7 @@ function getLoop() {
                 }
                 if(loopradio.checked) {
                     const loopcall = new XMLHttpRequest();
-                    const loopurl = 'https://hikemap-api.blondeau.me/loop/' +lat + '/' + lng + '/' + distance;
+                    const loopurl = routerurl+'/loop/' +lat + '/' + lng + '/' + distance + '/' + vehicle;
                     loopcall.open("GET", loopurl);
                     loopcall.send();
                     loopcall.onreadystatechange = (e) => {
@@ -64,7 +65,7 @@ function getLoop() {
                 if(patrimonialradio.checked) {
                     stops = document.getElementById("stops").value;
                     const loopcall = new XMLHttpRequest();
-                    const loopurl = 'https://hikemap-api.blondeau.me/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops;
+                    const loopurl = routerurl+'/patrimonial/' + lat + '/' + lng + '/' + distance + '/' +stops +'/'+vehicle;
                     loopcall.open("GET", loopurl);
                     loopcall.send();
                     loopcall.onreadystatechange = (e) => {
@@ -192,6 +193,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
+
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems, options);
 });
 
 var current_position, current_accuracy;
