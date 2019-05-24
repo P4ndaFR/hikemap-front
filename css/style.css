@@ -1,7 +1,7 @@
 #mapid { 
     position: absolute;
-    top: 7vh;
-    height: 93vh;
+    top: 7%;
+    height: 93%;
     width: 100vw;
     z-index: 1;
 }
@@ -12,3 +12,58 @@
     bottom: 5vh;
     z-index: 2;
 }
+
+#navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 7%;
+}
+
+@media only screen and (max-height: 600px) {
+    #mapid { 
+        position: absolute;
+        top: 13%;
+        height: 87%;
+        width: 100vw;
+        z-index: 1;
+    }
+    
+    .fixed-action-button {
+        position: absolute;
+        right: 5vw;
+        bottom: 5vh;
+        z-index: 2;
+    }
+    
+    #navbar {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 13%;
+    }
+  }
+
+  @media only screen and (max-height: 400px) {
+    #mapid { 
+        position: absolute;
+        top: 18%;
+        height: 82%;
+        width: 100vw;
+        z-index: 1;
+    }
+    
+    .fixed-action-button {
+        position: absolute;
+        right: 5vw;
+        bottom: 5vh;
+        z-index: 2;
+    }
+    
+    #navbar {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 18%;
+    }
+  }
