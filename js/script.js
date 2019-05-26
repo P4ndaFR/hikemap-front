@@ -20,7 +20,7 @@ function getLoop() {
 
     clearMap();
     sidenav.close();
-    var routerurl="https://hikemap-api.blondeau.me";
+    var routerurl="http://127.0.0.1:4567";
     var address = document.getElementById("address").value;
     address = address.replace(/ +(?= )/g,'+');
     var distance = document.getElementById("distance").value;
@@ -150,7 +150,7 @@ function onItinerariesLoaded(itineraries){
     itinerariesdiv = document.getElementById('itinerariesdiv');
 
     for(var j = 0 ; j < itineraries.length ; j++){
-        itinerariesdiv.insertAdjacentHTML('beforeend', '<p><label><input class="with-gap" name="group6" type="radio" id="itinerary'+j+'" value="'+j+'" onclick="showItinerary('+j+')"/><span>Itinéraire '+(j+1)+'</span></label></p>');
+        itinerariesdiv.insertAdjacentHTML('beforeend', '<p><label><input class="with-gap" name="group6" type="radio" id="itinerary' + j + '" value="' + j + '" onclick="showItinerary(' + j + ')"/><span>Itinéraire ' + (j + 1) + '  / Distance : ' + Math.round(itineraries[j].distance/1000) + 'km / Temps : ' + msToTime(itineraries[j].time) +'</span></label></p>');
     }
 }
 function showItinerary(index) {
@@ -172,6 +172,41 @@ function deleteStopSlider(){
     form = document.getElementById('form');
     div = document.getElementById('stopsdiv');
     form.removeChild(div);
+}
+
+function renderLoopInputs() {
+    altdiv = document.getElementById('altdiv');
+    altstopdiv = document.getElementById('altstopdiv');
+    if (altdiv != null) {
+        altdiv.removeChild(altstopdiv);
+    }
+
+    form = document.getElementById('form');
+    div = document.getElementById('stopsdiv');
+    if(div != null){
+        form.removeChild(div);
+    }
+}
+
+function renderPatrimonialInputs(){
+    altdiv = document.getElementById('altdiv');
+    altstopdiv = document.getElementById('altstopdiv');
+    if(altdiv != null) {
+        altdiv.removeChild(altstopdiv);
+    } 
+
+    div = document.getElementById('distancediv');
+    div.insertAdjacentHTML('afterend', '<div id=stopsdiv> <p id="brief" >Renseignez le nombre de monument que vous voulez visiter</p><p id=stopValue>3<p><p class="range-field"><input type="range" id="stops" min="1" max="5" onchange="showStopsValue()"/></p></div>');
+}
+
+function renderAltInputs() {
+    form = document.getElementById('form');
+    div = document.getElementById('stopsdiv');
+    if(div != null){
+        form.removeChild(div);
+    }
+    distancediv = document.getElementById('distancediv');
+    distancediv.insertAdjacentHTML('afterend', '<div id="altstopdiv"><p>Renseignez le point d\'arrivée</p ><div class="input-field col s12"><input placeholder="lat" id="alternative_end_lat" type="text" class="validate"> <label for="alternative_end_lat">Latitude</label> </div><div class="input-field col s12"><input placeholder="lon" id="alternative_end_lon" type="text" class="validate"><label for="alternative_end_lon">Longitude</label></div></div>');
 }
 
 function showStopsValue(){
@@ -235,6 +270,20 @@ function locate() {
          }
      }
 }
+
+function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+        seconds = Math.floor((duration / 1000) % 60),
+        minutes = Math.floor((duration / (1000 * 60)) % 60),
+        hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + "h " + minutes + "m " + seconds + "s " + milliseconds;
+}
+
 
 var latlon = [48.1688,-2.9059];
 var mymap = L.map('mapid', { zoomControl: false }).setView(latlon, 9);

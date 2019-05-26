@@ -59,8 +59,7 @@
                     <p>
                         <label>Mode de transport</label>
                         <select class="browser-default" id="vehicle">
-                            <option value="" disabled selected>Choisissez votre mode de transport</option>
-                            <option value="hike">Randonnée</option>
+                            <option value="hike" selected>Randonnée</option>
                             <option value="bike">Vélo</option>
                             <option value="car">Voiture</option>
                         </select>
@@ -86,37 +85,26 @@
                     <p>choisissez parmis les options</p>
                     <p>
                         <label>
-                            <input class="with-gap" name="group2" type="radio" id="loop" checked onclick="deleteStopSlider()"/>
+                            <input class="with-gap" name="group2" type="radio" id="loop" checked onclick="renderLoopInputs()"/>
                             <span>Simple boucle</span>
                         </label>
                     </p>
                     <p>
                         <label>
-                            <input class="with-gap" name="group2" type="radio"  id="patrimonial" unchecked onclick="addStopSlider()"/>
+                            <input class="with-gap" name="group2" type="radio"  id="patrimonial" onclick="renderPatrimonialInputs()"/>
                             <span>Boucle avec découverte patrimoniale</span>
                         </label>
                     </p>
                     <p>
                         <label>
-                            <input class="with-gap" name="group2" type="radio"  id="alternative" onclick="deleteStopSlider()"/>
+                            <input class="with-gap" name="group2" type="radio"  id="alternative" onclick="renderAltInputs()"/>
                             <span>Route Alternative</span>
                         </label>
                     </p>
-                    <p>Renseignez le point d'arrivée (Route alternative uniquement)</p>
-                    <div class="row" id="altdiv">
-                        <div class="input-field col s12">
-                            <input placeholder="lat" id="alternative_end_lat" type="text" class="validate">
-                            <label for="alternative_end_lat">Latitude</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <input placeholder="lon" id="alternative_end_lon" type="text" class="validate">
-                            <label for="alternative_end_lon">Longitude</label>
-                        </div>
-                    </div>
                     <p>Renseignez la distance de la randonnée</p>
                     <div class="row" id="distancediv">
                         <div class="input-field col s12">
-                            <input placeholder="5" id="distance" type="text" class="validate">
+                            <input placeholder="Brest" id="distance" type="text" class="validate">
                             <label for="distance">Distance</label>
                         </div>
                     </div>
