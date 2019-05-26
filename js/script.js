@@ -20,7 +20,7 @@ function getLoop() {
 
     clearMap();
     sidenav.close();
-    var routerurl="http://127.0.0.1:4567";
+    var routerurl="https://hikemap-api.blondeau.me";
     var address = document.getElementById("address").value;
     address = address.replace(/ +(?= )/g,'+');
     var distance = document.getElementById("distance").value;
