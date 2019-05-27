@@ -175,10 +175,10 @@ function deleteStopSlider(){
 }
 
 function renderLoopInputs() {
-    altdiv = document.getElementById('altdiv');
+    form = document.getElementById('form');
     altstopdiv = document.getElementById('altstopdiv');
-    if (altdiv != null) {
-        altdiv.removeChild(altstopdiv);
+    if (altstopdiv != null) {
+        form.removeChild(altstopdiv);
     }
 
     form = document.getElementById('form');
@@ -189,10 +189,10 @@ function renderLoopInputs() {
 }
 
 function renderPatrimonialInputs(){
-    altdiv = document.getElementById('altdiv');
+    form = document.getElementById('form');
     altstopdiv = document.getElementById('altstopdiv');
-    if(altdiv != null) {
-        altdiv.removeChild(altstopdiv);
+    if (altstopdiv != null) {
+        form.removeChild(altstopdiv);
     } 
 
     div = document.getElementById('distancediv');
